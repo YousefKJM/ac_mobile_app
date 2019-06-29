@@ -1,0 +1,48 @@
+page-home,
+.home {
+  ion-list {
+    border-radius: 1rem;
+    overflow: hidden;
+
+    ion-item,
+    .item:first-child,
+    .item:last-child {
+      border: none;
+    }
+  }
+  .iconL {
+    display: inline-block;
+    // color: rgb(247, 212, 160);
+    vertical-align: middle;
+
+  }
+  
+
+  // .buttonC {background-color: #4768BE;  color: #FFFFFF;   font-size: 110px;   transition: all 0.5s;}
+
+    .buttonC { 
+          background-image: linear-gradient(to top left,#0E98D9,#C6007E);
+          font-size: 150%;
+        }
+
+  .buttonC span {  cursor: pointer;  position: relative;  transition: 0.5s;}
+
+  .buttonC span:after {
+    position: absolute;  opacity: 0;  transition: 0.5s;
+  }
+
+        .logo-nav {
+        width: 129px;
+        height: 35px;
+        float: right;
+        border-radius: 10%;
+        background: url("../assets/img/logo-nav.png") no-repeat;
+        background-size: 100%;
+      }
+
+
+
+
+
+
+}

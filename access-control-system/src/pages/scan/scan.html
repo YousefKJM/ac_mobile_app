@@ -1,0 +1,69 @@
+<!-- -->
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      <strong>Scan</strong>
+    </ion-title>
+    <!-- <ion-buttons end>
+      <button ion-button tappable (click)="presentNotifications($event)">
+        <ion-icon name="notifications"></ion-icon>
+      </button>
+      <button ion-button tappable (click)="goToAccount()">
+        <ion-icon name="cog"></ion-icon>
+      </button>
+    </ion-buttons> -->
+  </ion-navbar>
+</ion-header>
+
+
+
+<ion-content padding class="animated fadeOut home-page">
+  <h2 text-center ion-text class="text-primary">
+      <strong>Please, scan your ID card to the nearest device</strong>
+  </h2>
+
+
+  <ion-card no-margin margin-bottom margin-top class="full-width">
+    <ion-item>
+      <!-- <ion-icon name="md-calendar" color="primary" item-left></ion-icon> -->
+      <!-- <ion-datetime class="no-pl" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="search.date"></ion-datetime> -->
+        <img src="assets/img/scan.jpg">
+    </ion-item>
+  </ion-card>
+
+
+<ion-grid>
+  <ion-row justify-content-center align-items-end style="height:100%">
+    <ion-col>
+    </ion-col>
+    <ion-col col-8>
+    <button ion-button icon-start block no-margin color="primary" class="buttonD round" tappable (click)="doScan()">
+      <ion-icon name=""></ion-icon> Done
+    </button>    </ion-col>
+    <ion-col>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+
+
+  <!-- <ion-row>
+    <ion-col style="text-align: center">
+      <button ion-button block no-margin color="primary" class="buttonD round" tappable (click)="doScan()">
+        <ion-icon name=""></ion-icon> Done
+      </button>
+    </ion-col>
+  </ion-row> -->
+
+    <!-- <div class="align-bottom quarter-op">
+      <img src="assets/img/grap-trans.png" alt="">
+    </div> -->
+
+  
+
+  
+
+</ion-content>

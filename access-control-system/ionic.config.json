@@ -1,0 +1,10 @@
+{
+  "name": "access-control",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {
+      "enabled": false
+    }
+  },
+  "type": "ionic-angular"
+}

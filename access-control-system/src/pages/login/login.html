@@ -1,0 +1,110 @@
+<!-- -->
+<ion-content padding class="animated fadeIn login auth-page">
+  <div class="login-content">
+
+    <!-- Logo -->
+    <div padding-horizontal text-center class="animated fadeInDown">
+      <div class="logo"></div>
+      <h2 ion-text class="text-primary">
+        <strong>Welcome</strong> 
+      </h2>
+    </div>
+
+    <!-- Login form -->
+    <form class="list-form" novalidate (ngSubmit)="login()" [formGroup]="signinform">
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="card" item-start class="text-primary"></ion-icon>
+          Badge Number
+        </ion-label>
+        <ion-input [(ngModel)]="userData.badgeNumber" formControlName="badgeNumber" type="number"
+          [class.error1]="!signinform.controls.badgeNumber.valid && signinform.controls.badgeNumber.dirty"></ion-input>
+      </ion-item>
+      <ion-item no-lines
+        *ngIf="( signinform.get('badgeNumber').hasError('minlength') || signinform.get('badgeNumber').hasError('maxlength') ||signinform.get('badgeNumber').hasError('pattern') ||signinform.get('badgeNumber').hasError('required') ) && signinform.get('badgeNumber').touched">
+        <div class="error"
+          *ngIf="signinform.get('badgeNumber').hasError('required') && signinform.get('badgeNumber').touched">
+          Please input your badge number
+        </div>
+        <div class="error"
+          *ngIf="signinform.get('badgeNumber').hasError('minlength') && signinform.get('badgeNumber').touched">
+          Minimum 6 characters
+        </div>
+        <div class="error"
+          *ngIf="signinform.get('badgeNumber').hasError('maxlength') && signinform.get('badgeNumber').touched">
+          Maximum 6 characters
+        </div>
+        <div class="error" *ngIf="signinform.get('badgeNumber').hasError('pattern') && signinform.get('badgeNumber').touched">
+          Just use numerical value
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+          Password
+        </ion-label>
+        <ion-input [(ngModel)]="userData.password" formControlName="password"
+          [class.error1]="!signinform.controls.password.valid && signinform.controls.password.dirty" type="password">
+        </ion-input>
+      </ion-item>
+      <ion-item no-lines
+        *ngIf="( signinform.get('password').hasError('minlength') || signinform.get('password').hasError('maxlength') ||signinform.get('password').hasError('required') ) && signinform.get('password').touched">
+        <div class="error" *ngIf="signinform.get('password').hasError('required') && signinform.get('password').touched">
+          Please input your password
+        </div>
+        <div class="error" *ngIf="signinform.get('password').hasError('minlength') && signinform.get('password').touched">
+          Minimum 6 characters
+        </div>
+        <div class="error" *ngIf="signinform.get('password').hasError('maxlength') && signinform.get('password').touched">
+          Maximum 12 characters
+        </div>
+      </ion-item>
+      <p text-right ion-text color="primary" tappable (click)="forgotPass()"><strong>Forgot Password?</strong></p>
+
+    <div>
+      <button ion-button icon-start block color="dark" type="submit" [disabled]="signinform.invalid">
+        <ion-icon name="log-in"></ion-icon>
+        SIGN IN
+      </button>
+    </div>
+
+
+    </form>
+
+    <!-- tappable (click)="login()" -->
+
+
+
+
+      <!-- <p text-center ion-text color="primary">Or Sign in with:</p> -->
+
+      <!-- <ion-grid>
+        <ion-row>
+          <ion-col col-4>
+            <button ion-button icon-only block class="btn-facebook">
+              <ion-icon name="logo-facebook"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col col-4>
+            <button ion-button icon-only block class="btn-twitter">
+              <ion-icon name="logo-twitter"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col col-4>
+            <button ion-button icon-only block class="btn-gplus">
+              <ion-icon name="logo-googleplus"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid> -->
+
+
+
+    <!-- Other links -->
+    <div text-center margin-top>
+      <span ion-text color="primary" tappable (click)="register()">New here? <strong>Sign up</strong></span>
+    </div>
+
+  </div>
+</ion-content>
