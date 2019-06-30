@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import { NavController, AlertController, ToastController } from "ionic-angular";
+import { NavController, AlertController, ToastController, LoadingController  } from "ionic-angular";
 import {LoginPage} from "../login/login";
 // import {HomePage} from "../home/home";
 import {ScanPage} from "../scan/scan";
@@ -15,9 +15,6 @@ var bluefruit = {
   rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e',  // receive is from the phone's perspective
   deviceId: "D2:B7:4D:6C:29:0C"
 };
-
-let array = new Uint8Array([0xCC, 0x24, 0x33]);
-
 
 // ASCII only
 // D2:B7:4D:6C:29:0C
@@ -46,7 +43,7 @@ export class RegisterPage implements OnInit {
 
   signupform: FormGroup;
   userData = { "firstName": "", "lastName": "", "badgeNumber": "", "password": "" };
-  constructor(public nav: NavController, public ble: BLE, public alertController: AlertController, public toastCtrl: ToastController) {
+  constructor(public nav: NavController, public ble: BLE, public alertController: AlertController, public toastCtrl: ToastController, public loadingController: LoadingController) {
     // this.checkBluetooth();
   }
 
@@ -68,91 +65,50 @@ export class RegisterPage implements OnInit {
     console.log(this.userData.badgeNumber);
     console.log(this.userData.password);
 
+    this.loading();
 
-    // this.ble.connect(bluefruit.deviceId);
-    // this.ble.autoConnect(bluefruit.deviceId, data => {
-    //   console.log('Connected Data: ', JSON.stringify(data));
-    // }, (error) => {
-    //   console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
-    // });
-    // this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic);
-
-    // this.ble.autoConnect(bluefruit.deviceId, data => {
-    //   console.log('Connected Data: ', JSON.stringify(data));
-
-
-
-    //   this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.firstName + "^" + this.userData.lastName + "^" + this.userData.password))).then(result => {
-    //   console.log(result);
-    //   this.nav.push(ScanPage, { fName: this.userData.firstName, lName: this.userData.lastName, bNumber: this.userData.badgeNumber });
-    //   }).catch(error => {
-    //     // this.presentAlert(JSON.stringify(error));
-    //     // let toast = this.toastCtrl.create({
-    //     //   message: 'The peripheral disconnected',
-    //     //   duration: 3000,
-    //     //   position: 'middle'
-    //     // });
-    //     // toast.present();
-    //     alert(JSON.stringify(error));
-    //   });
-
-
-    // }, (error: any) => {
-    //     console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
-    // });
-
-    this.ble.connect(bluefruit.deviceId).subscribe(data => {
-      // alert(data.characteristics);
-      this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.firstName + "^" + this.userData.lastName + "^" + this.userData.password))).then(result => {
-        console.log(result);
-        this.nav.push(ScanPage, { fName: this.userData.firstName, lName: this.userData.lastName, bNumber: this.userData.badgeNumber });
-      }).catch(error => {
-        // this.presentAlert(JSON.stringify(error));
-        // let toast = this.toastCtrl.create({
-        //   message: 'The peripheral disconnected',
-        //   duration: 3000,
-        //   position: 'middle'
-        // });
-        // toast.present();
-        alert(JSON.stringify(error));
-      });
-
-    }, error => {
-        let toast = this.toastCtrl.create({
-          message: 'The peripheral disconnected',
-        alert('disconnected');
-
-
-      });
-
-
-
-    
-
-    // this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber +"^"+ this.userData.firstName +"^"+ this.userData.lastName + "^" + this.userData.password)));
     console.log(this.addHash(this.userData.badgeNumber + "^" + this.userData.firstName + "^" + this.userData.lastName + "^" + this.userData.password));
     // this.ble.disconnect(bluefruit.deviceId);
+    }
 
-    
 
+  loading() {
+    let loader = this.loadingController.create({
+      spinner: null,
+      duration: 5000,
+      content: 'Please wait...',
+      // translucent: true,
+      cssClass: 'custom-class custom-loading'
+    });
 
-    // if (this.ble.isEnabled()) {
-    //   this.presentAlert("Bluetooth is enabled")
-    // } else {
-    //   this.presentAlert("Bluetooth is not enabled")
-    // }
-
+    loader.present().then(() => {
+      this.bleConnect().then(() => {
+        loader.dismiss();
+      });
+    });
   }
 
-success = function () {
-  console.log("success");
+  bleConnect() {
+    return new Promise((resolve) => {
 
-};
+      this.ble.connect(bluefruit.deviceId).subscribe(data => {
+      // alert(data.characteristics);
+        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.firstName + "^" + this.userData.lastName + "^" + this.userData.password))).then(result => {
+          console.log(result);
+          this.nav.push(ScanPage, { fName: this.userData.firstName, lName: this.userData.lastName, bNumber: this.userData.badgeNumber});
 
-failure = function () {
-  alert("Failed writing data to the bluefruit le");
-};
+        }).catch(error => {
+            alert(JSON.stringify(error));
+        });
 
+      }, error => {
+        alert('The peripheral is disconnected');
+        resolve(true);
+      });
+
+    });
+
+  }
 
   async presentAlert(txt: string) {
     const alert = await this.alertController.create({
@@ -164,48 +120,12 @@ failure = function () {
     await alert.present();
   }
 
-  
-
   // go to login page
   login() {
     this.nav.setRoot(LoginPage);
   }
 
-
   addHash(msg: string) {
     return "BGNMSG[CREAT"+ msg +"]ENDMSG";
   }
-
-
-  sendData(event) { // send data to Arduino
-
-  var success = function () {
-    console.log("success");
-  };
-
-  var failure = function () {
-    alert("Failed writing data to the bluefruit le");
-  };
-
-  var data = stringToBytes("this.messageInput.value");
-  var deviceId = event.target.dataset.deviceId;
-
-  if (this.ble.writeWithoutResponse) {
-    this.ble.writeWithoutResponse(deviceId,
-      bluefruit.serviceUUID,
-      bluefruit.txCharacteristic,
-      data
-    );
-  } else {
-   this.ble.write(
-      deviceId,
-      bluefruit.serviceUUID,
-      bluefruit.txCharacteristic,
-      data
-    );
-  }
-
-}
-
-
 }
