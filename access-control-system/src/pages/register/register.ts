@@ -120,10 +120,6 @@ export class RegisterPage implements OnInit {
     }, error => {
         let toast = this.toastCtrl.create({
           message: 'The peripheral disconnected',
-          duration: 3000,
-          position: 'middle'
-        });
-        toast.present();
         alert('disconnected');
 
 
