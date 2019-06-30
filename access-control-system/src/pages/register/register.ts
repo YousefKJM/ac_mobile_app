@@ -39,8 +39,6 @@ export class RegisterPage implements OnInit {
 
 
   
-
-  firstName: string;
   lastName: string;
   badgeNumber: number;
   password: string;
@@ -68,26 +66,28 @@ export class RegisterPage implements OnInit {
     console.log(this.userData.lastName);
     console.log(this.userData.badgeNumber);
     console.log(this.userData.password);
-    this.nav.push(ScanPage);
+    this.nav.push(ScanPage, { fName: this.userData.firstName, lName: this.userData.lastName, bNumber: this.userData.badgeNumber });
 
-    this.ble.connect(bluefruit.deviceId);
-    // this.ble.autoConnect(bluefruit.deviceId, data => {
-    //   console.log('Connected Data: ', JSON.stringify(data));
-    // }, (error) => {
-    //   console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
-    // });
+
+    // this.ble.connect(bluefruit.deviceId);
+    this.ble.autoConnect(bluefruit.deviceId, data => {
+      console.log('Connected Data: ', JSON.stringify(data));
+    }, (error) => {
+      console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
+    });
     // this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic);
-    this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes("hello"));
-    this.ble.disconnect(bluefruit.deviceId);
+    this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber +"^"+ this.userData.firstName +"^"+ this.userData.lastName + "^" + this.userData.password)));
+    console.log(this.addHash(this.userData.badgeNumber + "^" + this.userData.firstName + "^" + this.userData.lastName + "^" + this.userData.password));
+    // this.ble.disconnect(bluefruit.deviceId);
 
     
 
 
-    if (this.ble.isEnabled()) {
-      this.presentAlert("Bluetooth is enabled")
-    } else {
-      this.presentAlert("Bluetooth is not enabled")
-    }
+    // if (this.ble.isEnabled()) {
+    //   this.presentAlert("Bluetooth is enabled")
+    // } else {
+    //   this.presentAlert("Bluetooth is not enabled")
+    // }
 
   }
 
@@ -111,7 +111,7 @@ export class RegisterPage implements OnInit {
 
 
   addHash(msg: string) {
-    return "BGNMSG["+ msg +"]ENDMSG";
+    return "BGNMSG[CREAT"+ msg +"]ENDMSG";
   }
 
 

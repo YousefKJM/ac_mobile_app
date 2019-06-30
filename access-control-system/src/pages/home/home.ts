@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, PopoverController} from "ionic-angular";
+import { NavController, PopoverController, NavParams } from "ionic-angular";
 import {Storage} from '@ionic/storage';
 import {LoginPage} from "../login/login";
 
@@ -11,27 +11,37 @@ import {LoginPage} from "../login/login";
 })
 
 export class HomePage {
-  // search condition
-  public search = {
-    name: "Rio de Janeiro, Brazil",
-    date: new Date().toISOString()
-  }
 
-  constructor(private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController) {
+  public frName: string;
+  public laName: string;
+  public baNumber: number;
+
+
+
+
+  userData = { "firstName": "", "lastName": "", "badgeNumber": "", "password": "" };
+
+
+  constructor(private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController, public navParams: NavParams) {
+
+    this.frName = this.navParams.get('frName');
+    this.laName = this.navParams.get('laName');
+    this.baNumber = this.navParams.get('baNumber');
+
   }
 
   ionViewWillEnter() {
     // this.search.pickup = "Rio de Janeiro, Brazil";
     // this.search.dropOff = "Same as pickup";
-    this.storage.get('pickup').then((val) => {
-      if (val === null) {
-        this.search.name = "Rio de Janeiro, Brazil"
-      } else {
-        this.search.name = val;
-      }
-    }).catch((err) => {
-      console.log(err)
-    });
+    // this.storage.get('pickup').then((val) => {
+    //   if (val === null) {
+    //     this.search.name = "Rio de Janeiro, Brazil"
+    //   } else {
+    //     this.search.name = val;
+    //   }
+    // }).catch((err) => {
+    //   console.log(err)
+    // });
   }
 
   openDoor() {

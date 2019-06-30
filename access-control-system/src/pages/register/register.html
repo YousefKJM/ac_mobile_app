@@ -17,7 +17,7 @@
           <ion-icon name="person" item-start class="text-primary"></ion-icon>
           First Name
         </ion-label>
-        <ion-input [(ngModel)]="userData.firstName" formControlName="firstName" type="text" [class.error1]="!signupform.controls.firstName.valid && signupform.controls.firstName.dirty"></ion-input>
+        <ion-input  [(ngModel)]="userData.firstName" formControlName="firstName" type="text" [class.error1]="!signupform.controls.firstName.valid && signupform.controls.firstName.dirty"></ion-input>
       </ion-item>
       <ion-item no-lines
         *ngIf="( signupform.get('firstName').hasError('minlength') || signupform.get('firstName').hasError('maxlength') ||signupform.get('firstName').hasError('pattern') ||signupform.get('firstName').hasError('required') ) && signupform.get('firstName').touched">

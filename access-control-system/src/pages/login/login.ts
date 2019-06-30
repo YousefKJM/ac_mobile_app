@@ -39,7 +39,8 @@ export class LoginPage implements OnInit {
   // login and go to home page
   login() {
 
-    this.nav.setRoot(HomePage);
+
+    this.nav.setRoot(HomePage, { baNumber: this.userData.badgeNumber });
   }
 
   forgotPass() {
