@@ -5,7 +5,28 @@ import {RegisterPage} from "../register/register";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BLE } from '@ionic-native/ble';
 
+// this is Nordic's UART service
+var bluefruit = {
+  serviceUUID: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+  txCharacteristic: '6e400002-b5a3-f393-e0a9-e50e24dcca9e', // transmit is from the phone's perspective
+  rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e',  // receive is from the phone's perspective
+  deviceId: "D2:B7:4D:6C:29:0C"
+};
 
+// ASCII only
+// D2:B7:4D:6C:29:0C
+function bytesToString(buffer) {
+  return String.fromCharCode.apply(null, new Uint8Array(buffer));
+}
+
+// ASCII only
+function stringToBytes(string) {
+  var array = new Uint8Array(string.length);
+  for (var i = 0, l = string.length; i < l; i++) {
+    array[i] = string.charCodeAt(i);
+  }
+  return array.buffer;
+}
 
 @Component({
   selector: 'page-login',
@@ -41,6 +62,17 @@ export class LoginPage implements OnInit {
 
 
     this.nav.setRoot(HomePage, { baNumber: this.userData.badgeNumber });
+    // this.ble.connect(bluefruit.deviceId);
+    this.ble.autoConnect(bluefruit.deviceId, data => {
+      console.log('Connected Data: ', JSON.stringify(data));
+    }, (error) => {
+      console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
+    });
+    // this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic);
+    this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.password)));
+    console.log(this.addHash(this.userData.badgeNumber + "^" + this.userData.password));
+
+
   }
 
   forgotPass() {
@@ -79,6 +111,10 @@ export class LoginPage implements OnInit {
       ]
     });
     forgot.present();
+  }
+
+  addHash(msg: string) {
+    return "BGNMSG[LOGIN" + msg + "]ENDMSG";
   }
 
 }
