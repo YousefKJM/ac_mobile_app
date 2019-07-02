@@ -1,5 +1,5 @@
 import { Component, OnInit} from "@angular/core";
-import {NavController, AlertController, ToastController, MenuController} from "ionic-angular";
+import { NavController, AlertController, ToastController, MenuController, LoadingController} from "ionic-angular";
 import {HomePage} from "../home/home";
 import {RegisterPage} from "../register/register";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -35,20 +35,19 @@ function stringToBytes(string) {
 export class LoginPage implements OnInit {
 
 
-  badgeNumber: number;
-  password: string;
+
 
   signinform: FormGroup;
   userData = { "badgeNumber": "", "password": "" };
 
-  constructor(public nav: NavController, public ble: BLE, public forgotCtrl: AlertController, public menu: MenuController, public toastCtrl: ToastController) {
+  constructor(public nav: NavController, public ble: BLE, public forgotCtrl: AlertController, public menu: MenuController, public toastCtrl: ToastController, public loadingController: LoadingController) {
     this.menu.swipeEnable(false);
   }
 
   ngOnInit() {
     this.signinform = new FormGroup({
-      badgeNumber: new FormControl('', [Validators.required, Validators.pattern("[0-9]{6}"), Validators.minLength(6), Validators.maxLength(6)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]),
+      badgeNumber: new FormControl('', [Validators.required, Validators.pattern("[0-9]*"), Validators.minLength(5), Validators.maxLength(6)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(16)]),
     });
   }
 
@@ -58,18 +57,27 @@ export class LoginPage implements OnInit {
   }
 
   // login and go to home page
-  login() {
+  login(value: any) {
+
+    if (this.signinform.valid) {
+      window.localStorage.setItem('badgeNumber', value.userData.badgeNumber);
+      window.localStorage.setItem('password', value.value.userData.password);
+
+      this.loading();
+
+      // this.nav.push(HomePage, { baNumber: this.userData.badgeNumber });
+    }
 
 
-    this.nav.setRoot(HomePage, { baNumber: this.userData.badgeNumber });
+    // this.nav.setRoot(HomePage, { baNumber: this.userData.badgeNumber });
     // this.ble.connect(bluefruit.deviceId);
-    this.ble.autoConnect(bluefruit.deviceId, data => {
-      console.log('Connected Data: ', JSON.stringify(data));
-    }, (error) => {
-      console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
-    });
+    // this.ble.autoConnect(bluefruit.deviceId, data => {
+    //   console.log('Connected Data: ', JSON.stringify(data));
+    // }, (error) => {
+    //   console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
+    // });
     // this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic);
-    this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.password)));
+    // this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.password)));
     console.log(this.addHash(this.userData.badgeNumber + "^" + this.userData.password));
 
 
@@ -111,6 +119,45 @@ export class LoginPage implements OnInit {
       ]
     });
     forgot.present();
+  }
+
+  loading() {
+    let loader = this.loadingController.create({
+      spinner: null,
+      duration: 5000,
+      content: 'Please wait...',
+      // translucent: true,
+      cssClass: 'custom-class custom-loading'
+    });
+
+    loader.present().then(() => {
+      this.bleConnect().then(() => {
+        loader.dismiss();
+      });
+    });
+  }
+
+  bleConnect() {
+    return new Promise((resolve, reject) => {
+
+      this.ble.connect(bluefruit.deviceId).subscribe(data => {
+        // alert(data.characteristics);
+        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.password))).then(result => {
+          console.log(result);
+          resolve(true);
+          this.nav.push(HomePage, { bNumber: this.userData.badgeNumber });
+
+        }).catch(error => {
+          alert(JSON.stringify(error));
+        });
+
+      }, error => {
+        reject(true);
+        alert('The peripheral is disconnected');
+      });
+
+    });
+
   }
 
   addHash(msg: string) {

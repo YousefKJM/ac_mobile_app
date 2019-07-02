@@ -22,27 +22,17 @@ var bluefruit = {
 
 export class ScanPage {
 
-  public fName: string;
-  public lName: string;
-  public bNumber: number;
-
-
-
-  userData = { "firstName": "", "lastName": "", "badgeNumber": "", "password": "" };
 
 
   constructor(public ble: BLE, private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController, public navParams: NavParams
 ) {
-    this.fName = this.navParams.get('fName');
-    this.lName = this.navParams.get('lName');
-    this.bNumber = this.navParams.get('bNumber');
+
 
   }
 
   // go to home page
     doScan() {
-      this.nav.setRoot(HomePage, { frName: this.fName, laName: this.lName, baNumber: this.bNumber}); 
-      this.ble.disconnect(bluefruit.deviceId);
+      this.nav.setRoot(HomePage); 
 
 
     }

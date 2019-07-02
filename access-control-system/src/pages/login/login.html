@@ -11,11 +11,11 @@
     </div>
 
     <!-- Login form -->
-    <form class="list-form" novalidate (ngSubmit)="login()" [formGroup]="signinform">
+    <form class="list-form" novalidate (ngSubmit)="login(signinform.value)" [formGroup]="signinform">
       <ion-item>
         <ion-label floating>
           <ion-icon name="card" item-start class="text-primary"></ion-icon>
-          Badge Number
+          Badge Number 
         </ion-label>
         <ion-input [(ngModel)]="userData.badgeNumber" formControlName="badgeNumber" type="number"
           [class.error1]="!signinform.controls.badgeNumber.valid && signinform.controls.badgeNumber.dirty"></ion-input>

@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import { NavController, PopoverController, NavParams } from "ionic-angular";
+import { NavController, PopoverController, NavParams, LoadingController } from "ionic-angular";
 import {Storage} from '@ionic/storage';
 import {LoginPage} from "../login/login";
 import { BLE } from '@ionic-native/ble';
@@ -40,6 +40,7 @@ export class HomePage {
   public frName: string;
   public laName: string;
   public baNumber: number;
+  badgeNumber: string;
 
 
 
@@ -47,11 +48,13 @@ export class HomePage {
   userData = { "firstName": "", "lastName": "", "badgeNumber": "", "password": "" };
 
 
-  constructor(public ble: BLE, private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController, public navParams: NavParams) {
+  constructor(public ble: BLE, private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController, public navParams: NavParams, public loadingController: LoadingController) {
 
-    this.frName = this.navParams.get('frName');
-    this.laName = this.navParams.get('laName');
-    this.baNumber = this.navParams.get('baNumber');
+    this.badgeNumber = window.localStorage.getItem('firstName');
+    this.badgeNumber = window.localStorage.getItem('lastName');
+    this.badgeNumber = window.localStorage.getItem('badgeNumber');
+    this.badgeNumber = window.localStorage.getItem('password');
+
 
   }
 
@@ -71,19 +74,67 @@ export class HomePage {
 
   openDoor() {
     // this.ble.connect(bluefruit.deviceId);
-    this.ble.autoConnect(bluefruit.deviceId, data => {
-      console.log('Connected Data: ', JSON.stringify(data));
-    }, (error) => {
-      console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
-    });
+    // this.ble.autoConnect(bluefruit.deviceId, data => {
+    //   console.log('Connected Data: ', JSON.stringify(data));
+    // }, (error) => {
+    //   console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
+    // });
     // this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic);
-    this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash("")));
+    this.loading();
+    // this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash("")));
     console.log(this.addHash("^the door is opened"));
     // this.ble.disconnect(bluefruit.deviceId);
   }
 
   logout() {
+
+    window.localStorage.removeItem('badgeNumber');
+    window.localStorage.removeItem('password');
+
     this.nav.setRoot(LoginPage);
+    this.nav.popToRoot();   
+    // this.nav.setRoot(LoginPage);
+  }
+
+  loading() {
+    let loader = this.loadingController.create({
+      spinner: null,
+      duration: 5000,
+      content: 'Please wait...',
+      // translucent: true,
+      cssClass: 'custom-class custom-loading'
+    });
+
+    loader.present().then(() => {
+      this.bleConnect().then(() => {
+        loader.dismiss();
+      });
+    });
+  }
+
+  bleConnect() {
+    return new Promise((resolve, reject) => {
+
+      this.ble.connect(bluefruit.deviceId).subscribe(data => {
+        // alert(data.characteristics);
+        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(""))).then(result => {
+          console.log(result);
+          resolve(true);
+          // this.nav.push(HomePage, { bNumber: this.userData.badgeNumber });
+          alert('The door is opened');
+
+
+        }).catch(error => {
+          alert(JSON.stringify(error));
+        });
+
+      }, error => {
+        reject(true);
+        alert('The peripheral is disconnected');
+      });
+
+    });
+
   }
 
   addHash(msg: string) {

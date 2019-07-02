@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Keyboard } from '@ionic-native/keyboard';
 
-// import { HomePage } from "../pages/home/home";
+import { HomePage } from "../pages/home/home";
 import { LoginPage } from "../pages/login/login";
 import { BLE } from '@ionic-native/ble';
 
@@ -70,6 +70,10 @@ export class MyApp {
         }
       );
 
+      this.checkPreviousAuthorization();
+
+      
+
       // this.ble.autoConnect(bluefruit.deviceId, data => {
       //   console.log('Connected Data: ', JSON.stringify(data));
       // }, (error) => {
@@ -92,6 +96,15 @@ export class MyApp {
     });
 
   }
+
+  checkPreviousAuthorization(): void {
+    if ((window.localStorage.getItem('badgeNumber') === "undefined" || window.localStorage.getItem('badgeNumber') === null) &&
+      (window.localStorage.getItem('password') === "undefined" || window.localStorage.getItem('password') === null)) {
+      this.rootPage = LoginPage;
+    } else {
+      this.rootPage = HomePage;
+    }
+  } 
 
   async showError(error) {
     const alert = await this.alertController.create({

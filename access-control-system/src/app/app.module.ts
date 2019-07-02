@@ -44,10 +44,7 @@ import {ScanPage} from "../pages/scan/scan";
       scrollAssist: true,
       autoFocusAssist: false
     }),
-    IonicStorageModule.forRoot({
-      name: '__access_control_system',
-        driverOrder: ['indexeddb', 'sqlite', 'websql']
-    })
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
