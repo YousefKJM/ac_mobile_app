@@ -10,14 +10,18 @@ import {Keyboard} from '@ionic-native/keyboard';
 
 import {ActivityService} from "../services/activity-service";
 
+
 import {MyApp} from "./app.component";
 import { BLE } from '@ionic-native/ble';
+
 
 
 import {HomePage} from "../pages/home/home";
 import {LoginPage} from "../pages/login/login";
 import {RegisterPage} from "../pages/register/register";
 import {ScanPage} from "../pages/scan/scan";
+import { AdminPage } from '../pages/admin/admin';
+
 
 
 
@@ -34,7 +38,8 @@ import {ScanPage} from "../pages/scan/scan";
     HomePage,
     LoginPage,
     RegisterPage,
-    ScanPage
+    ScanPage,
+    AdminPage
   ],
   imports: [
     BrowserModule,
@@ -52,7 +57,8 @@ import {ScanPage} from "../pages/scan/scan";
     HomePage,
     LoginPage,
     RegisterPage,
-    ScanPage
+    ScanPage,
+    AdminPage
   ],
   providers: [
     StatusBar,
@@ -60,8 +66,7 @@ import {ScanPage} from "../pages/scan/scan";
     Keyboard,
     ActivityService,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-    BLE
-      
+    BLE      
   ]
 })
 

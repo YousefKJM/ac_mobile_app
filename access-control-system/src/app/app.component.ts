@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import { HomePage } from "../pages/home/home";
+import { AdminPage } from '../pages/admin/admin';
 import { LoginPage } from "../pages/login/login";
 import { BLE } from '@ionic-native/ble';
 
@@ -102,7 +103,13 @@ export class MyApp {
       (window.localStorage.getItem('password') === "undefined" || window.localStorage.getItem('password') === null)) {
       this.rootPage = LoginPage;
     } else {
-      this.rootPage = HomePage;
+      if (window.localStorage.getItem('isAdmin').match("1")) {
+        this.rootPage = AdminPage;
+
+      } else {
+        this.rootPage = HomePage;
+
+      }
     }
   } 
 

@@ -4,6 +4,7 @@ import {HomePage} from "../home/home";
 import {RegisterPage} from "../register/register";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BLE } from '@ionic-native/ble';
+import { AdminPage } from '../admin/admin';
 
 // this is Nordic's UART service
 var bluefruit = {
@@ -70,7 +71,9 @@ export class LoginPage implements OnInit {
   // login and go to home page
   login() {
 
-    this.loading();
+    // this.loading();
+    this.nav.push(HomePage);
+
 
     console.log(this.addHash(this.userData.badgeNumber + "^" + this.userData.password));
 
@@ -197,6 +200,8 @@ export class LoginPage implements OnInit {
     // alert(prm[0] +" "+ prm[1])
     if (cmd.includes("LOGOK")) {
 
+      
+
       this.ble.disconnect(bluefruit.deviceId);
 
       window.localStorage.setItem('badgeNumber', prm[0].toString());
@@ -204,7 +209,14 @@ export class LoginPage implements OnInit {
       window.localStorage.setItem('lastName', prm[2].toString());
       window.localStorage.setItem('isAdmin', prm[3].toString());
 
-      this.nav.push(HomePage);
+      if(prm[3].match("1")) {
+        this.nav.push(AdminPage);
+
+      }
+      else {
+        this.nav.push(HomePage);
+      }
+
 
 
 

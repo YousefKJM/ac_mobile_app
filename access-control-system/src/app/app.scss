@@ -272,6 +272,12 @@ ion-icon {
 &[class*="custom-door"] {
     mask-image: url(../assets/icon/opened-door-aperture.svg);
   }
+  &[class*="custom-checkS"] {
+    mask-image: url(../assets/icon/check-square-solid.svg);
+  }
+    &[class*="custom-check"] {
+    mask-image: url(../assets/icon/check-solid.svg);
+  }
 
 }
 

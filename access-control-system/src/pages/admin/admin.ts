@@ -1,11 +1,16 @@
-import {Component, ViewChild} from "@angular/core";
-import { NavController, PopoverController, NavParams, LoadingController, AlertController } from "ionic-angular";
-import {Storage} from '@ionic/storage';
-import {LoginPage} from "../login/login";
+import { Component } from '@angular/core';
+import { NavController, NavParams, LoadingController, AlertController, PopoverController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
+import { LoginPage } from "../login/login";
 import { BLE } from '@ionic-native/ble';
 
 
-
+/**
+ * Generated class for the AdminPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
 
 // this is Nordic's UART service
 var bluefruit = {
@@ -36,67 +41,71 @@ function stringToBytes(string) {
   return array.buffer;
 }
 
+export interface MenuItem {
+  title: string;
+  component: any;
+  icon: string;
+}
+
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-admin',
+  templateUrl: 'admin.html',
 })
+export class AdminPage {
 
-export class HomePage {
-
-  // @ViewChild('open', {read: ElementRef}) open;
-
+  appMenuItems: Array<MenuItem>;
 
 
   userData = { "firstName": "", "lastName": "", "badgeNumber": "", "password": "" };
   disableButton: boolean;
   visible = false;
-
-
+  
 
   constructor(public ble: BLE,
-      private storage: Storage,
-      public nav: NavController,
-      public popoverCtrl: PopoverController,
-      public navParams: NavParams, 
-      public loadingController: LoadingController,
-      public alertController: AlertController,
-      ) {
+    private storage: Storage,
+    public nav: NavController,
+    public popoverCtrl: PopoverController,
+    public navParams: NavParams,
+    public loadingController: LoadingController,
+    public alertController: AlertController ) {
+
 
     this.userData.firstName = window.localStorage.getItem('firstName');
     this.userData.lastName = window.localStorage.getItem('lastName');
     this.userData.badgeNumber = window.localStorage.getItem('badgeNumber');
-    // this.userData.password = window.localStorage.getItem('password');
-
-
   }
 
-  ionViewWillEnter() {
-    // this.search.pickup = "Rio de Janeiro, Brazil";
-    // this.search.dropOff = "Same as pickup";
-    // this.storage.get('pickup').then((val) => {
-    //   if (val === null) {
-    //     this.search.name = "Rio de Janeiro, Brazil"
-    //   } else {
-    //     this.search.name = val;
-    //   }
-    // }).catch((err) => {
-    //   console.log(err)
-    // });
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad AdminPage');
   }
-
 
   openDoor() {
-
     this.loading();
+  }
 
-
-
-
-
-
-    // this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash("")));
-    console.log(this.addHash("^the door is opened"));
-    // this.ble.disconnect(bluefruit.deviceId);
+  adminPan() {
+    let alert = this.alertController.create({
+      title: 'Confirm',
+      message: 'This will show the admin panel in the terminal device',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+            alert.dismiss;
+          }
+        },
+        {
+          text: 'OK',
+          handler: () => {
+            console.log('Ok clicked');
+            
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   logout() {
@@ -105,7 +114,7 @@ export class HomePage {
     window.localStorage.removeItem('password');
 
     this.nav.setRoot(LoginPage);
-    this.nav.popToRoot();   
+    this.nav.popToRoot();
     // this.nav.setRoot(LoginPage);
   }
 
@@ -130,7 +139,7 @@ export class HomePage {
 
       this.ble.connect(bluefruit.deviceId).subscribe(data => {
         // alert(data.characteristics);
-        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(""))).then(result => {
+        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash("OPEND"))).then(result => {
           console.log(result);
           resolve(true);
           // this.nav.push(HomePage, { bNumber: this.userData.badgeNumber });
@@ -161,7 +170,7 @@ export class HomePage {
   }
 
   addHash(msg: string) {
-    return "BGNMSG[OPEND" + msg + "]ENDMSG";
+    return "BGNMSG[" + msg + "]ENDMSG";
   }
 
   processSerial(data: string): void {
@@ -209,7 +218,7 @@ export class HomePage {
 
 
     } else if (cmd.includes("ERROR")) {
-      if (prm[0].toString().includes("901")) {
+      if (prm[0].toString().match("901")) {
 
         // this.showAlert("Exist", "Account Exist, cannot create new account")
         alert("Account exist, cannot create new account");
@@ -228,6 +237,29 @@ export class HomePage {
     alert.present();
   }
 
-}
+  presentConfirm() {
+    let alert = this.alertController.create({
+      title: 'Confirm',
+      message: 'This will show the admin panel in the terminal device',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
 
-//
+          }
+        },
+        {
+          text: 'OK',
+          handler: () => {
+            console.log('Ok clicked');
+
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+}

@@ -1,5 +1,5 @@
-page-home,
-.home {
+page-admin,
+.admin {
   ion-list {
     border-radius: 1rem;
     overflow: hidden;
@@ -23,24 +23,14 @@ page-home,
     .buttonC { 
           background-image: linear-gradient(to top left,#0E98D9,#C6007E);
           font-size: 150%;
-          text-align: center;
-          // -webkit-transition-duration: 2s; /* Safari */
-          // transition-duration: 2s;
           transition: 1s linear !important;
+
         }
-
-
 
   // .buttonC span {  cursor: pointer;  position: relative;  transition: 0.5s;}
 
   // .buttonC span:after {
   //   position: absolute;  opacity: 0;  transition: 0.5s;
-  // }
-
-  // .buttonC:checked {
-  //   -webkit-transform: rotate(360deg);
-  //     background: #9351A6;
-  //     border-radius: 50%;
   // }
 
         .logo-nav {
