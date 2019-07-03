@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import { NavController, PopoverController, NavParams, LoadingController } from "ionic-angular";
+import { NavController, PopoverController, NavParams, LoadingController, AlertController } from "ionic-angular";
 import {Storage} from '@ionic/storage';
 import {LoginPage} from "../login/login";
 import { BLE } from '@ionic-native/ble';
@@ -14,6 +14,12 @@ var bluefruit = {
   rxCharacteristic: '6e400003-b5a3-f393-e0a9-e50e24dcca9e',  // receive is from the phone's perspective
   deviceId: "D2:B7:4D:6C:29:0C"
 };
+
+
+var allData: string = "";
+var started: boolean = false;
+const BGNM: string = "BGNMSG[";
+const ENDM: string = "]ENDMSG";
 
 // ASCII only
 // D2:B7:4D:6C:29:0C
@@ -37,10 +43,7 @@ function stringToBytes(string) {
 
 export class HomePage {
 
-  public frName: string;
-  public laName: string;
-  public baNumber: number;
-  badgeNumber: string;
+
 
 
 
@@ -48,12 +51,19 @@ export class HomePage {
   userData = { "firstName": "", "lastName": "", "badgeNumber": "", "password": "" };
 
 
-  constructor(public ble: BLE, private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController, public navParams: NavParams, public loadingController: LoadingController) {
+  constructor(public ble: BLE,
+      private storage: Storage,
+      public nav: NavController,
+      public popoverCtrl: PopoverController,
+      public navParams: NavParams, 
+      public loadingController: LoadingController,
+      public alertController: AlertController 
+      ) {
 
-    this.badgeNumber = window.localStorage.getItem('firstName');
-    this.badgeNumber = window.localStorage.getItem('lastName');
-    this.badgeNumber = window.localStorage.getItem('badgeNumber');
-    this.badgeNumber = window.localStorage.getItem('password');
+    this.userData.firstName = window.localStorage.getItem('firstName');
+    this.userData.lastName = window.localStorage.getItem('lastName');
+    this.userData.badgeNumber = window.localStorage.getItem('badgeNumber');
+    // this.userData.password = window.localStorage.getItem('password');
 
 
   }
@@ -121,11 +131,21 @@ export class HomePage {
           console.log(result);
           resolve(true);
           // this.nav.push(HomePage, { bNumber: this.userData.badgeNumber });
-          alert('The door is opened');
 
 
         }).catch(error => {
           alert(JSON.stringify(error));
+        });
+
+        this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic).subscribe(data => {
+
+          this.processSerial(bytesToString(data));
+          resolve(true);
+
+
+
+        }, error => {
+          this.showAlert('Unexpected Error', 'Failed to subscribe');
         });
 
       }, error => {
@@ -139,6 +159,63 @@ export class HomePage {
 
   addHash(msg: string) {
     return "BGNMSG[OPEND" + msg + "]ENDMSG";
+  }
+
+  processSerial(data: string): void {
+    allData = allData + data;
+    if (!started) {
+      if (allData.includes(BGNM)) {
+        allData = allData.substring(allData.indexOf(BGNM) + BGNM.length);
+        started = true;
+      }
+    }
+    if (started) {
+      var endIndex: number = allData.indexOf(ENDM);
+      var bgnIndex: number = allData.indexOf(BGNM);
+      if (endIndex != -1 && (bgnIndex == -1 || endIndex < bgnIndex)) {
+        var completedMsg: string = allData.substring(0, allData.indexOf(ENDM));
+        allData = allData.substring(allData.indexOf(ENDM) + ENDM.length);
+        started = false;
+        this.processMessage(completedMsg);
+        this.processSerial("");
+        return;
+      } else if (allData.includes(BGNM)) {
+        started = false;
+        this.processSerial("");
+        return;
+      }
+    }
+  }
+
+  processMessage(msg: string): void {
+    var cmd: string = msg.substring(0, 5);
+    var prm: string[] = msg.substring(5).split("^");
+    if (cmd.includes("OKCMD")) {
+      // this.showAlert("Welcome", "Account Created" )
+      alert('The door is opened');
+      // this.nav.push(ScanPage);
+      this.ble.disconnect(bluefruit.deviceId);
+
+
+
+    } else if (cmd.includes("ERROR")) {
+      if (prm[0].toString().includes("901")) {
+
+        // this.showAlert("Exist", "Account Exist, cannot create new account")
+        alert("Account exist, cannot create new account");
+        this.ble.disconnect(bluefruit.deviceId);
+
+      }
+    }
+  }
+
+  showAlert(title, message) {
+    let alert = this.alertController.create({
+      title: title,
+      subTitle: message,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
 }

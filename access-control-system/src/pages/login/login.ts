@@ -13,6 +13,11 @@ var bluefruit = {
   deviceId: "D2:B7:4D:6C:29:0C"
 };
 
+var allData: string = "";
+var started: boolean = false;
+const BGNM: string = "BGNMSG[";
+const ENDM: string = "]ENDMSG";
+
 // ASCII only
 // D2:B7:4D:6C:29:0C
 function bytesToString(buffer) {
@@ -38,9 +43,15 @@ export class LoginPage implements OnInit {
 
 
   signinform: FormGroup;
-  userData = { "badgeNumber": "", "password": "" };
+  userData = { "firstName": "", "lastName": "","badgeNumber": "", "password": "" };
 
-  constructor(public nav: NavController, public ble: BLE, public forgotCtrl: AlertController, public menu: MenuController, public toastCtrl: ToastController, public loadingController: LoadingController) {
+  constructor(public nav: NavController,
+     public ble: BLE, 
+     public forgotCtrl: AlertController,
+      public menu: MenuController, 
+      public toastCtrl: ToastController,
+      public alertController: AlertController,
+       public loadingController: LoadingController) {
     this.menu.swipeEnable(false);
   }
 
@@ -52,32 +63,15 @@ export class LoginPage implements OnInit {
   }
 
   // go to register page
-  register() {
+  register(value: any) {
     this.nav.push(RegisterPage);
   }
 
   // login and go to home page
-  login(value: any) {
+  login() {
 
-    if (this.signinform.valid) {
-      window.localStorage.setItem('badgeNumber', value.userData.badgeNumber);
-      window.localStorage.setItem('password', value.value.userData.password);
+    this.loading();
 
-      this.loading();
-
-      // this.nav.push(HomePage, { baNumber: this.userData.badgeNumber });
-    }
-
-
-    // this.nav.setRoot(HomePage, { baNumber: this.userData.badgeNumber });
-    // this.ble.connect(bluefruit.deviceId);
-    // this.ble.autoConnect(bluefruit.deviceId, data => {
-    //   console.log('Connected Data: ', JSON.stringify(data));
-    // }, (error) => {
-    //   console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
-    // });
-    // this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic);
-    // this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.password)));
     console.log(this.addHash(this.userData.badgeNumber + "^" + this.userData.password));
 
 
@@ -137,31 +131,111 @@ export class LoginPage implements OnInit {
     });
   }
 
+
   bleConnect() {
     return new Promise((resolve, reject) => {
 
       this.ble.connect(bluefruit.deviceId).subscribe(data => {
-        // alert(data.characteristics);
+
         this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(this.userData.badgeNumber + "^" + this.userData.password))).then(result => {
           console.log(result);
-          resolve(true);
-          this.nav.push(HomePage, { bNumber: this.userData.badgeNumber });
 
         }).catch(error => {
           alert(JSON.stringify(error));
         });
 
+        this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic).subscribe(data => {
+
+          this.processSerial(bytesToString(data));
+
+
+
+        }, error => {
+          this.showAlert('Unexpected Error', 'Failed to subscribe');
+        });
+        resolve(true);
+
+
       }, error => {
         reject(true);
         alert('The peripheral is disconnected');
       });
-
     });
 
+  }
+
+  processSerial(data: string): void {
+    allData = allData + data;
+    if (!started) {
+      if (allData.includes(BGNM)) {
+        allData = allData.substring(allData.indexOf(BGNM) + BGNM.length);
+        started = true;
+      }
+    }
+    if (started) {
+      var endIndex: number = allData.indexOf(ENDM);
+      var bgnIndex: number = allData.indexOf(BGNM);
+      if (endIndex != -1 && (bgnIndex == -1 || endIndex < bgnIndex)) {
+        var completedMsg: string = allData.substring(0, allData.indexOf(ENDM));
+        allData = allData.substring(allData.indexOf(ENDM) + ENDM.length);
+        started = false;
+        this.processMessage(completedMsg);
+        this.processSerial("");
+        return;
+      } else if (allData.includes(BGNM)) {
+        started = false;
+        this.processSerial("");
+        return;
+      }
+    }
+  }
+
+  processMessage(msg: string): void {
+    var cmd: string = msg.substring(0, 5);
+    var prm: string[] = msg.substring(5).split("^");
+    
+    // alert(prm[0] +" "+ prm[1])
+    if (cmd.includes("LOGOK")) {
+
+      this.ble.disconnect(bluefruit.deviceId);
+
+      window.localStorage.setItem('badgeNumber', prm[0].toString());
+      window.localStorage.setItem('firstName', prm[1].toString());
+      window.localStorage.setItem('lastName', prm[2].toString());
+      window.localStorage.setItem('isAdmin', prm[3].toString());
+
+      this.nav.push(HomePage);
+
+
+
+
+    } else if (cmd.includes("ERROR")) {
+      if(prm[0].toString().match("904")) {
+      // this.showAlert("Exist", "Account Exist, cannot create new account")
+        alert("Password is incorrect");
+        this.ble.disconnect(bluefruit.deviceId);
+
+    } else if (prm[0].toString().match("905")) {
+        alert("Account does not exist");
+        this.ble.disconnect(bluefruit.deviceId);
+
+    }
+  }
   }
 
   addHash(msg: string) {
     return "BGNMSG[LOGIN" + msg + "]ENDMSG";
   }
+
+  showAlert(title, message) {
+    let alert = this.alertController.create({
+      title: title,
+      subTitle: message,
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
+
 
 }

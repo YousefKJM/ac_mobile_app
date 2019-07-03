@@ -92,7 +92,7 @@
         <ion-input [(ngModel)]="userData.password" formControlName="password" [class.error1]="!signupform.controls.password.valid && signupform.controls.password.dirty" type="password"></ion-input>
       </ion-item>
       <ion-item no-lines
-        *ngIf="( signupform.get('password').hasError('minlength') || signupform.get('password').hasError('maxlength') ||signupform.get('password').hasError('required') ) && signupform.get('password').touched">
+        *ngIf="( signupform.get('password').hasError('pattern') || signupform.get('password').hasError('minlength') || signupform.get('password').hasError('maxlength') ||signupform.get('password').hasError('required') ) && signupform.get('password').touched">
         <div class="error" *ngIf="signupform.get('password').hasError('required') && signupform.get('password').touched">
           Please input your password
         </div>
@@ -100,7 +100,10 @@
           Minimum 6 characters
         </div>
         <div class="error" *ngIf="signupform.get('password').hasError('maxlength') && signupform.get('password').touched">
-          Maximum 12 characters
+          Maximum 16 characters
+        </div>
+        <div class="error" *ngIf="signupform.get('password').hasError('pattern') && signupform.get('password').touched">
+           Must contain at least 1 number, 1 uppercase, 1 lowercase, and special letter 
         </div>
       </ion-item>
 
