@@ -58,41 +58,31 @@ export class MyApp {
       //*** Control Status Bar
       this.statusBar.styleDefault();
       this.statusBar.overlaysWebView(false);
+      // this.statusBar.hide();
+      // this.statusBar.overlaysWebView(true);
 
       //*** Control Keyboard
       this.keyboard.disableScroll(true);
 
       this.ble.isEnabled().then(
         success => {
-          this.showToast("Bluetooth is enabled");
+          this.checkPreviousAuthorization();
         },
         error => {
-          this.showError("Bluetooth is *not* enabled");
+          // this.showError("Bluetooth is *not* enabled");
+          this.ble.enable().then(
+            success => {
+              this.checkPreviousAuthorization();
+            },
+            error => {
+              alert("You cannot proceed without enabling Bluetooth");
+              this.rootPage = LoginPage;
+            }
+          );
+
         }
       );
 
-      this.checkPreviousAuthorization();
-
-      
-
-      // this.ble.autoConnect(bluefruit.deviceId, data => {
-      //   console.log('Connected Data: ', JSON.stringify(data));
-      // }, (error) => {
-      //   console.log('Cannot connect or peripheral disconnected.', JSON.stringify(error));
-      // });
-
-      // this.ble.enable().then(
-      //   success => {
-      //     this.showToast("Bluetooth is enabled");
-      //   },
-      //   error => {
-      //     this.showError("The user did *not* enable Bluetooth");
-      //   }
-      // );
-
-      
-
-   
 
     });
 

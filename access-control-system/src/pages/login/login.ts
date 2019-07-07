@@ -71,9 +71,8 @@ export class LoginPage implements OnInit {
   // login and go to home page
   login() {
 
-    // this.loading();
-    this.nav.push(HomePage);
-
+    this.loading();
+    // this.nav.push(HomePage);
 
     console.log(this.addHash(this.userData.badgeNumber + "^" + this.userData.password));
 
@@ -145,6 +144,8 @@ export class LoginPage implements OnInit {
 
         }).catch(error => {
           alert(JSON.stringify(error));
+          this.ble.disconnect(bluefruit.deviceId);
+
         });
 
         this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic).subscribe(data => {
@@ -155,6 +156,8 @@ export class LoginPage implements OnInit {
 
         }, error => {
           this.showAlert('Unexpected Error', 'Failed to subscribe');
+            // this.ble.disconnect(bluefruit.deviceId);
+
         });
         resolve(true);
 
@@ -162,6 +165,8 @@ export class LoginPage implements OnInit {
       }, error => {
         reject(true);
         alert('The peripheral is disconnected');
+        // this.ble.disconnect(bluefruit.deviceId);
+
       });
     });
 
@@ -210,11 +215,13 @@ export class LoginPage implements OnInit {
       window.localStorage.setItem('isAdmin', prm[3].toString());
 
       if(prm[3].match("1")) {
+        this.ble.disconnect(bluefruit.deviceId);
         this.nav.push(AdminPage);
-
       }
-      else {
+      else if (prm[3].match("0")) {
+        this.ble.disconnect(bluefruit.deviceId);
         this.nav.push(HomePage);
+
       }
 
 

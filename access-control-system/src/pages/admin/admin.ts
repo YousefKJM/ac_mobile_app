@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController, PopoverController } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
 import { LoginPage } from "../login/login";
 import { BLE } from '@ionic-native/ble';
 
@@ -62,7 +61,6 @@ export class AdminPage {
   
 
   constructor(public ble: BLE,
-    private storage: Storage,
     public nav: NavController,
     public popoverCtrl: PopoverController,
     public navParams: NavParams,
@@ -80,7 +78,7 @@ export class AdminPage {
   }
 
   openDoor() {
-    this.loading();
+    this.loading("OPEND");
   }
 
   adminPan() {
@@ -100,6 +98,7 @@ export class AdminPage {
           text: 'OK',
           handler: () => {
             console.log('Ok clicked');
+            this.loading("ADMPN");
             
           }
         }
@@ -112,34 +111,36 @@ export class AdminPage {
 
     window.localStorage.removeItem('badgeNumber');
     window.localStorage.removeItem('password');
+    this.ble.disconnect(bluefruit.deviceId);
+
 
     this.nav.setRoot(LoginPage);
     this.nav.popToRoot();
     // this.nav.setRoot(LoginPage);
   }
 
-  loading() {
+  loading(cmd: string) {
     let loader = this.loadingController.create({
       spinner: null,
-      duration: 5000,
+      duration: 10000,
       content: 'Please wait...',
       // translucent: true,
       cssClass: 'custom-class custom-loading'
     });
 
     loader.present().then(() => {
-      this.bleConnect().then(() => {
+      this.bleConnect(cmd).then(() => {
         loader.dismiss();
       });
     });
   }
 
-  bleConnect() {
+  bleConnect(cmd: string) {
     return new Promise((resolve, reject) => {
 
       this.ble.connect(bluefruit.deviceId).subscribe(data => {
         // alert(data.characteristics);
-        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash("OPEND"))).then(result => {
+        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(cmd))).then(result => {
           console.log(result);
           resolve(true);
           // this.nav.push(HomePage, { bNumber: this.userData.badgeNumber });
@@ -204,7 +205,6 @@ export class AdminPage {
     var prm: string[] = msg.substring(5).split("^");
     if (cmd.includes("OKCMD")) {
       // this.showAlert("Welcome", "Account Created" )
-      alert('The door is opened');
       this.ble.disconnect(bluefruit.deviceId);
       this.visible = !this.visible;
       this.disableButton = true;
@@ -212,18 +212,24 @@ export class AdminPage {
       setTimeout(() => {
         this.visible = !this.visible;
         this.disableButton = false;
-
       }, 5000);
 
-
-
-    } else if (cmd.includes("ERROR")) {
+    } else if (cmd.match("OKADM")) {
+      this.ble.disconnect(bluefruit.deviceId);
+    }
+    else if (cmd.includes("ERROR")) {
       if (prm[0].toString().match("901")) {
-
         // this.showAlert("Exist", "Account Exist, cannot create new account")
-        alert("Account exist, cannot create new account");
+        alert("Account exist – cannot create new account");
         this.ble.disconnect(bluefruit.deviceId);
-
+      }
+      else if (prm[0].toString().match("902")) {
+        alert("Account pending approval – cannot open door");
+        this.ble.disconnect(bluefruit.deviceId);
+      }
+      else if (prm[0].toString().match("903")) {
+        alert("Account access removed – contact administrator");
+        this.ble.disconnect(bluefruit.deviceId);
       }
     }
   }

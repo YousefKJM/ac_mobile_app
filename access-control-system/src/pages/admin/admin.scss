@@ -17,26 +17,18 @@ page-admin,
 
   }
   
-
-  // .buttonC {background-color: #4768BE;  color: #FFFFFF;   font-size: 110px;   transition: all 0.5s;}
-
-    .buttonC { 
+    .buttonD { 
           background-image: linear-gradient(to top left,#0E98D9,#C6007E);
           font-size: 150%;
-          transition: 1s linear !important;
+          transition: 2s linear !important;
 
         }
-
-  // .buttonC span {  cursor: pointer;  position: relative;  transition: 0.5s;}
-
-  // .buttonC span:after {
-  //   position: absolute;  opacity: 0;  transition: 0.5s;
-  // }
 
         .logo-nav {
         width: 129px;
         height: 35px;
         float: right;
+        vertical-align: middle;
         border-radius: 10%;
         background: url("../assets/img/logo-nav.png") no-repeat;
         background-size: 100%;

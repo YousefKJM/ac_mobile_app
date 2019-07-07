@@ -34,14 +34,14 @@
     <ion-toolbar class="user-profile">
       <ion-grid>
         <ion-row>
-          <ion-col col-4>
+          <ion-col col-3>
             <div class="user-avatar">
               <img src="assets/img/avatar.jpg">
             </div>
           </ion-col>
-          <ion-col padding-top col-8>
+          <ion-col padding-top col-9>
             <h2 ion-text class="no-margin bold text-white">
-              {{userData.firstName}}
+              {{userData.firstName}} {{userData.lastName}}
             </h2>
             <span ion-text color="light">#{{userData.badgeNumber}}</span>
           </ion-col>

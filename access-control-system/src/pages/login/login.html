@@ -57,13 +57,13 @@
           Minimum 6 characters
         </div>
         <div class="error" *ngIf="signinform.get('password').hasError('maxlength') && signinform.get('password').touched">
-          Maximum 12 characters
+          Maximum 16 characters
         </div>
       </ion-item>
       <p text-right ion-text color="primary" tappable (click)="forgotPass()"><strong>Forgot Password?</strong></p>
 
-    <div>
-      <button ion-button icon-start block color="dark" type="submit" [disabled]="signinform.invalid">
+    <div margin-top>
+      <button class="round" ion-button icon-start block color="dark" type="submit" [disabled]="signinform.invalid">
         <ion-icon name="log-in"></ion-icon>
         SIGN IN
       </button>

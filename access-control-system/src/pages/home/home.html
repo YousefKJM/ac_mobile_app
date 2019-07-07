@@ -28,14 +28,14 @@
   <ion-toolbar class="user-profile">
     <ion-grid>
       <ion-row>
-        <ion-col col-4>
+        <ion-col col-3>
           <div class="user-avatar">
             <img src="assets/img/avatar.jpg">
           </div>
         </ion-col>
-        <ion-col padding-top col-8>
+        <ion-col padding-top col-9>
           <h2 ion-text class="no-margin bold text-white">
-            {{userData.firstName}}
+            {{userData.firstName}} {{userData.lastName}}
           </h2>
           <span ion-text color="light">#{{userData.badgeNumber}}</span>
         </ion-col>
@@ -66,19 +66,6 @@
 </div> -->
  
 
-
-
-
-  <!-- <ion-card no-margin margin-bottom class="full-width">
-    <ion-item tappable (click)="choosePlace('from')" class="border-bottom">
-      <ion-icon name="search" color="primary" item-left></ion-icon>
-      <span>{{ search.name }}</span>
-    </ion-item>
-    <ion-item>
-      <ion-icon name="md-calendar" color="primary" item-left></ion-icon>
-      <ion-datetime class="no-pl" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="search.date"></ion-datetime>
-    </ion-item>
-  </ion-card> -->
 
     
 

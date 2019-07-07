@@ -103,12 +103,12 @@
           Maximum 16 characters
         </div>
         <div class="error" *ngIf="signupform.get('password').hasError('pattern') && signupform.get('password').touched">
-           Must contain at least 1 number, 1 uppercase, 1 lowercase, and special letter 
+           Must contain at least one number, one uppercase, one lowercase, and one special letter 
         </div>
       </ion-item>
 
         <div margin-top>
-          <button type="submit" ion-button block color="dark" [disabled]="signupform.invalid">
+          <button class="round" type="submit" ion-button block color="dark" [disabled]="signupform.invalid">
             SIGN UP
           </button>
         </div>

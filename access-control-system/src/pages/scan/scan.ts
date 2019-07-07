@@ -1,6 +1,5 @@
 import {Component} from "@angular/core";
 import { NavController, PopoverController, NavParams } from "ionic-angular";
-import {Storage} from '@ionic/storage';
 
 import {HomePage} from "../home/home";
 import { BLE } from '@ionic-native/ble';
@@ -24,7 +23,10 @@ export class ScanPage {
 
 
 
-  constructor(public ble: BLE, private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController, public navParams: NavParams
+  constructor(public ble: BLE,
+      public nav: NavController,
+       public popoverCtrl: PopoverController,
+        public navParams: NavParams
 ) {
 
 

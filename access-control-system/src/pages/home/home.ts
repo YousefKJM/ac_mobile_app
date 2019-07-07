@@ -1,6 +1,5 @@
-import {Component, ViewChild} from "@angular/core";
+import {Component} from "@angular/core";
 import { NavController, PopoverController, NavParams, LoadingController, AlertController } from "ionic-angular";
-import {Storage} from '@ionic/storage';
 import {LoginPage} from "../login/login";
 import { BLE } from '@ionic-native/ble';
 
@@ -54,7 +53,6 @@ export class HomePage {
 
 
   constructor(public ble: BLE,
-      private storage: Storage,
       public nav: NavController,
       public popoverCtrl: PopoverController,
       public navParams: NavParams, 
@@ -88,21 +86,18 @@ export class HomePage {
   openDoor() {
 
     this.loading();
-
-
-
-
-
-
     // this.ble.write(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash("")));
     console.log(this.addHash("^the door is opened"));
     // this.ble.disconnect(bluefruit.deviceId);
   }
 
+
   logout() {
 
     window.localStorage.removeItem('badgeNumber');
     window.localStorage.removeItem('password');
+    this.ble.disconnect(bluefruit.deviceId);
+
 
     this.nav.setRoot(LoginPage);
     this.nav.popToRoot();   
@@ -112,7 +107,7 @@ export class HomePage {
   loading() {
     let loader = this.loadingController.create({
       spinner: null,
-      duration: 5000,
+      duration: 10000,
       content: 'Please wait...',
       // translucent: true,
       cssClass: 'custom-class custom-loading'
@@ -195,7 +190,6 @@ export class HomePage {
     var prm: string[] = msg.substring(5).split("^");
     if (cmd.includes("OKCMD")) {
       // this.showAlert("Welcome", "Account Created" )
-      alert('The door is opened');
       this.ble.disconnect(bluefruit.deviceId);
       this.visible = !this.visible;
       this.disableButton = true;
@@ -203,19 +197,22 @@ export class HomePage {
       setTimeout(() => {
         this.visible = !this.visible;
         this.disableButton = false;
-
       }, 5000);
-
-
-
+      
     } else if (cmd.includes("ERROR")) {
-      if (prm[0].toString().includes("901")) {
-
-        // this.showAlert("Exist", "Account Exist, cannot create new account")
-        alert("Account exist, cannot create new account");
-        this.ble.disconnect(bluefruit.deviceId);
-
-      }
+        if (prm[0].toString().match("901")) {
+          // this.showAlert("Exist", "Account Exist, cannot create new account")
+          alert("Account exist – cannot create new account");
+          this.ble.disconnect(bluefruit.deviceId);
+        }
+        else if (prm[0].toString().match("902")) {
+          alert("Account pending approval – cannot open door");
+          this.ble.disconnect(bluefruit.deviceId);
+        }
+        else if (prm[0].toString().match("903")) {
+          alert("Account access removed – contact administrator");
+          this.ble.disconnect(bluefruit.deviceId);
+        }
     }
   }
 

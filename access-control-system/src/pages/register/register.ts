@@ -1,7 +1,6 @@
 import { Component, OnInit, NgZone } from "@angular/core";
 import { NavController, AlertController, ToastController, LoadingController  } from "ionic-angular";
 import {LoginPage} from "../login/login";
-// import {HomePage} from "../home/home";
 import {ScanPage} from "../scan/scan";
 import { BLE } from '@ionic-native/ble';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
