@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { NavController, AlertController, ToastController, LoadingController  } from "ionic-angular";
 import {LoginPage} from "../login/login";
 import {ScanPage} from "../scan/scan";
@@ -55,8 +55,7 @@ export class RegisterPage implements OnInit {
      public ble: BLE, 
      public alertController: AlertController,
      public toastCtrl: ToastController, 
-     public loadingController: LoadingController,
-     private ngZone: NgZone) {
+     public loadingController: LoadingController) {
     // this.checkBluetooth();
   }
 
@@ -129,7 +128,7 @@ export class RegisterPage implements OnInit {
 
       }, error => {
           reject(true);
-          alert('The peripheral is disconnected');
+          alert('You need to be closer to the door');
       });
 
     });

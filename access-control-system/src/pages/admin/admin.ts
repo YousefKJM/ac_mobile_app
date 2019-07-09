@@ -78,7 +78,7 @@ export class AdminPage {
   }
 
   openDoor() {
-    this.loading("OPEND");
+    this.loading("OPEND" + window.localStorage.getItem('badgeNumber'));
   }
 
   adminPan() {
@@ -98,7 +98,7 @@ export class AdminPage {
           text: 'OK',
           handler: () => {
             console.log('Ok clicked');
-            this.loading("ADMPN");
+            this.loading("ADMPN" + window.localStorage.getItem('badgeNumber'));
             
           }
         }
@@ -163,7 +163,7 @@ export class AdminPage {
 
       }, error => {
         reject(true);
-        alert('The peripheral is disconnected');
+         alert('You need to be closer to the door');
       });
 
     });
@@ -215,6 +215,9 @@ export class AdminPage {
       }, 5000);
 
     } else if (cmd.match("OKADM")) {
+      this.ble.disconnect(bluefruit.deviceId);
+    } else if (cmd.match("FLGOT")) {
+      this.logout();
       this.ble.disconnect(bluefruit.deviceId);
     }
     else if (cmd.includes("ERROR")) {

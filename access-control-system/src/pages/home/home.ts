@@ -96,7 +96,7 @@ export class HomePage {
 
     window.localStorage.removeItem('badgeNumber');
     window.localStorage.removeItem('password');
-    this.ble.disconnect(bluefruit.deviceId);
+    // this.ble.disconnect(bluefruit.deviceId);
 
 
     this.nav.setRoot(LoginPage);
@@ -125,7 +125,7 @@ export class HomePage {
 
       this.ble.connect(bluefruit.deviceId).subscribe(data => {
         // alert(data.characteristics);
-        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(""))).then(result => {
+        this.ble.writeWithoutResponse(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.txCharacteristic, stringToBytes(this.addHash(window.localStorage.getItem('badgeNumber')))).then(result => {
           console.log(result);
           resolve(true);
           // this.nav.push(HomePage, { bNumber: this.userData.badgeNumber });
@@ -148,7 +148,7 @@ export class HomePage {
 
       }, error => {
         reject(true);
-        alert('The peripheral is disconnected');
+        alert('You need to be closer to the door');
       });
 
     });

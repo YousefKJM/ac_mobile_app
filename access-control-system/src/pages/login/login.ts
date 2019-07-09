@@ -164,7 +164,7 @@ export class LoginPage implements OnInit {
 
       }, error => {
         reject(true);
-        alert('The peripheral is disconnected');
+        alert('You need to be closer to the door');
         // this.ble.disconnect(bluefruit.deviceId);
 
       });
