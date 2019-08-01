@@ -1,0 +1,42 @@
+page-admin,
+.admin {
+  ion-list {
+    border-radius: 1rem;
+    overflow: hidden;
+
+    ion-item,
+    .item:first-child,
+    .item:last-child {
+      border: none;
+    }
+  }
+  .iconL {
+    display: inline-block;
+    // color: rgb(247, 212, 160);
+    vertical-align: middle;
+
+  }
+  
+    .buttonD { 
+          background-image: linear-gradient(to top left,#0E98D9,#C6007E);
+          font-size: 150%;
+          transition: 2s linear !important;
+
+        }
+
+        .logo-nav {
+        width: 129px;
+        height: 35px;
+        float: right;
+        vertical-align: middle;
+        border-radius: 10%;
+        background: url("../assets/img/logo-nav.png") no-repeat;
+        background-size: 100%;
+      }
+
+
+
+
+
+
+}

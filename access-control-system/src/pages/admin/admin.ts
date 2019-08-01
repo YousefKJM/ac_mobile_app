@@ -91,7 +91,7 @@ export class AdminPage {
           role: 'cancel',
           handler: () => {
             console.log('Cancel clicked');
-            alert.dismiss;
+            alert.dismiss();
           }
         },
         {

@@ -5,6 +5,7 @@ import {RegisterPage} from "../register/register";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BLE } from '@ionic-native/ble';
 import { AdminPage } from '../admin/admin';
+import { ScanPage } from "../scan/scan";
 
 // this is Nordic's UART service
 var bluefruit = {
@@ -203,44 +204,39 @@ export class LoginPage implements OnInit {
     var prm: string[] = msg.substring(5).split("^");
     
     // alert(prm[0] +" "+ prm[1])
-    if (cmd.includes("LOGOK")) {
+    if (cmd.includes("LOGOK")) {      
 
-      
-
-      this.ble.disconnect(bluefruit.deviceId);
-
-      window.localStorage.setItem('badgeNumber', prm[0].toString());
-      window.localStorage.setItem('firstName', prm[1].toString());
-      window.localStorage.setItem('lastName', prm[2].toString());
-      window.localStorage.setItem('isAdmin', prm[3].toString());
-
-      if(prm[3].match("1")) {
         this.ble.disconnect(bluefruit.deviceId);
-        this.nav.push(AdminPage);
+
+        window.localStorage.setItem('badgeNumber', prm[0].toString());
+        window.localStorage.setItem('firstName', prm[1].toString());
+        window.localStorage.setItem('lastName', prm[2].toString());
+        window.localStorage.setItem('isAdmin', prm[3].toString());
+
+
+        if(prm[3].match("1")) {
+          this.ble.disconnect(bluefruit.deviceId);
+          this.nav.push(AdminPage);
+          
+        }
+        else if (prm[3].match("0")) {
+          this.ble.disconnect(bluefruit.deviceId);
+          this.nav.push(HomePage);
+        }
+
+
+      } else if (cmd.includes("ERROR")) {
+
+        if(prm[0].toString().match("904")) {
+          this.ble.disconnect(bluefruit.deviceId);
+          alert("Password is incorrect");
+
+        } else if (prm[0].toString().match("905")) {
+          this.ble.disconnect(bluefruit.deviceId);
+          alert("Account does not exist");
+        }
       }
-      else if (prm[3].match("0")) {
-        this.ble.disconnect(bluefruit.deviceId);
-        this.nav.push(HomePage);
-
-      }
-
-
-
-
-
-    } else if (cmd.includes("ERROR")) {
-      if(prm[0].toString().match("904")) {
-      // this.showAlert("Exist", "Account Exist, cannot create new account")
-        alert("Password is incorrect");
-        this.ble.disconnect(bluefruit.deviceId);
-
-    } else if (prm[0].toString().match("905")) {
-        alert("Account does not exist");
-        this.ble.disconnect(bluefruit.deviceId);
-
     }
-  }
-  }
 
   addHash(msg: string) {
     return "BGNMSG[LOGIN" + msg + "]ENDMSG";

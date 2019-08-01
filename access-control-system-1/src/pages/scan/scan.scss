@@ -1,0 +1,20 @@
+page-scan,
+.scan {
+  ion-list {
+    border-radius: 1rem;
+    overflow: hidden;
+
+    ion-item,
+    .item:first-child,
+    .item:last-child {
+      border: none;
+    }
+  }
+
+      .buttonD { 
+          background-image: linear-gradient(to top left,#0E98D9,#C6007E);
+        }
+
+
+
+}

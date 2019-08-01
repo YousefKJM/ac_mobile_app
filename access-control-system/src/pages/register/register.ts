@@ -116,6 +116,8 @@ export class RegisterPage implements OnInit {
         this.ble.startNotification(bluefruit.deviceId, bluefruit.serviceUUID, bluefruit.rxCharacteristic).subscribe( data => {
 
           this.processSerial(bytesToString(data));
+          resolve(true);
+
  
 
 
@@ -123,7 +125,6 @@ export class RegisterPage implements OnInit {
 
         });
       // alert(data.characteristics);
-        resolve(true);
 
 
       }, error => {
@@ -187,26 +188,23 @@ export class RegisterPage implements OnInit {
     var prm: string[] = msg.substring(5).split("^");
     if (cmd.includes("OKCMD")) {
       // this.showAlert("Welcome", "Account Created" )
-      alert("Account created");
+      // alert("Account created");
       this.ble.disconnect(bluefruit.deviceId);
       this.nav.push(ScanPage);
 
-        window.localStorage.setItem('firstName', this.userData.firstName);
-        window.localStorage.setItem('lastName', this.userData.lastName);
-      window.localStorage.setItem('badgeNumber', this.userData.badgeNumber);
-      window.localStorage.setItem('password', this.userData.password);
+      // window.localStorage.setItem('firstName', this.userData.firstName);
+      // window.localStorage.setItem('lastName', this.userData.lastName);
+      // window.localStorage.setItem('badgeNumber', this.userData.badgeNumber);
+      // window.localStorage.setItem('password', this.userData.password);
 
     
     } else if (cmd.includes("ERROR")) {
         if (prm[0].toString().includes("901")) {
-
-      // this.showAlert("Exist", "Account Exist, cannot create new account")
-      alert("Account exist, cannot create new account");
-      this.ble.disconnect(bluefruit.deviceId);
-
-    }
+          this.ble.disconnect(bluefruit.deviceId);
+          alert("Account exist - cannot create new account");
+        }
+      } 
   } 
-  }
 
 
 

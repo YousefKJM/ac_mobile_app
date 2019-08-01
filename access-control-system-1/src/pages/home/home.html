@@ -1,0 +1,146 @@
+<!-- -->
+
+<ion-content padding class="animated fadeIn home-page">
+
+<ion-header>
+  <ion-navbar color="white" hideBackButton>
+    <!-- <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button> -->
+      <!-- <ion-item> -->
+        <!-- <ion-icon name="md-calendar" color="primary" item-left></ion-icon> -->
+        <!-- <ion-datetime class="no-pl" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="search.date"></ion-datetime> -->
+          <div class="logo-nav">
+            <!-- <img src="../../assets/img/logo-nav.png" alt=""> -->
+          </div>
+      <!-- </ion-item> -->
+    <!-- <ion-buttons end>
+      <button ion-button tappable (click)="presentNotifications($event)">
+        <ion-icon name="notifications"></ion-icon>
+      </button>
+      <button ion-button tappable (click)="goToAccount()">
+        <ion-icon name="cog"></ion-icon>
+      </button>
+    </ion-buttons> -->
+  </ion-navbar>
+
+
+  <ion-toolbar class="user-profile">
+    <ion-grid>
+      <ion-row>
+        <ion-col col-3>
+          <div class="user-avatar">
+            <img src="assets/img/avatar.jpg">
+          </div>
+        </ion-col>
+        <ion-col padding-top col-9>
+          <h2 ion-text class="no-margin bold text-white">
+            {{userData.firstName}} {{userData.lastName}}
+            <!-- Yousef Majeed -->
+          </h2>
+          <span ion-text color="light">
+            #{{userData.badgeNumber}}
+            <!-- #798688 -->
+          </span>
+        </ion-col>
+      </ion-row>
+
+      <ion-row no-padding class="other-data">
+
+        <ion-col no-padding class="column">
+          <button ion-button icon-left small full color="light" menuClose
+            (click)="inbox('http://192.168.0.106:8080/TestSignage/Messages.jsp')">
+            <ion-icon name="mail"></ion-icon>
+            Inbox
+          </button>
+        </ion-col>
+
+        <ion-col no-padding class="column">
+          <button ion-button icon-left small full color="light" menuClose (click)="logout()">
+            <ion-icon name="log-out"></ion-icon>
+            Log Out
+          </button>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+
+  </ion-toolbar>
+</ion-header>
+
+<!-- 
+<div class="align-bottom quarter-op">
+  <img src="assets/img/grap-trans.png" alt="">
+</div> -->
+
+<!-- <ion-content>
+<ion-list no-lines>
+
+    <ion-item *ngFor="let beacon of beacons">
+      <ion-grid>
+        <ion-row>
+          <ion-col>Major</ion-col>
+          <ion-col>{{beacon.major}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Minor</ion-col>
+          <ion-col>{{beacon.minor}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>RSSI</ion-col>
+          <ion-col>{{beacon.rssi}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+  </ion-list>
+</ion-content> -->
+
+
+<!-- <ion-content padding>
+  <h3>Cordova Proximity Quickstart</h3>
+
+  <ion-list>
+
+    <ion-item>
+      <ion-label fixed>UUID</ion-label>
+      <ion-textarea type="text" [(ngModel)]="uuid"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label fixed>Major</ion-label>
+      <ion-textarea type="number" [(ngModel)]="major"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label fixed>Minor</ion-label>
+      <ion-textarea type="number" [(ngModel)]="minor"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label fixed>Advertising</ion-label>
+      <ion-label *ngIf="isAdvertisingAvailable === true" color="primary">Supported</ion-label>
+      <ion-label *ngIf="isAdvertisingAvailable === false" color="danger">Not Supported</ion-label>
+    </ion-item>
+
+  </ion-list>
+
+  <button ion-button type="button" (click)="onAdvertiseClicked()" block>Start Advertising</button>
+  <button ion-button type="button" (click)="onStopAdvertiseClicked()" block>Stop Advertising</button>
+
+</ion-content> -->
+
+    
+
+
+
+   <button ion-button icon-start block no-margin color="primary" class="buttonC round align-center"  tappable (click)="openDoor()" [disabled]="disableButton"> 
+        <ion-icon class="iconL" name="custom-check" *ngIf="visible"></ion-icon>
+        <ion-icon class="iconL" name="custom-door" *ngIf="!visible"></ion-icon>
+  </button> 
+
+
+  
+  <!-- tappable (click)="" -->
+
+</ion-content>

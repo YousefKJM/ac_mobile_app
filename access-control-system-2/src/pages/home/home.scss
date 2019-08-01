@@ -1,0 +1,69 @@
+page-home,
+.home {
+  ion-list {
+    border-radius: 1rem;
+    overflow: hidden;
+
+    ion-item,
+    .item:first-child,
+    .item:last-child {
+      border: none;
+    }
+  }
+  .iconL {
+    display: inline-block;
+    // color: rgb(247, 212, 160);
+    vertical-align: middle;
+
+  }
+
+//   .item-ios .item-button {
+//     padding: 0 0.5em;
+//     height: 150px;
+//     font-size: 1.3rem;
+// }
+
+
+  
+
+  // .buttonC {background-color: #4768BE;  color: #FFFFFF;   font-size: 110px;   transition: all 0.5s;}
+
+    .buttonC { 
+          background-image: linear-gradient(to top left,#0E98D9,#C6007E);
+          font-size: 150%;
+          text-align: center;
+          // -webkit-transition-duration: 2s; /* Safari */
+          // transition-duration: 2s;
+          transition: 2s linear !important;
+ 
+        }
+
+
+
+  // .buttonC span {  cursor: pointer;  position: relative;  transition: 0.5s;}
+
+  // .buttonC span:after {
+  //   position: absolute;  opacity: 0;  transition: 0.5s;
+  // }
+
+  // .buttonC:checked {
+  //   -webkit-transform: rotate(360deg);
+  //     background: #9351A6;
+  //     border-radius: 50%;
+  // }
+
+        .logo-nav {
+        width: 129px;
+        height: 35px;
+        float: right;
+        border-radius: 10%;
+        background: url("../assets/img/logo-nav.png") no-repeat;
+        background-size: 100%;
+      }
+
+
+
+
+
+
+}

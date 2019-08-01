@@ -1,0 +1,13 @@
+{
+  "name": "access-control",
+  "short_name": "access-control",
+  "start_url": "index.html",
+  "display": "standalone",
+  "icons": [{
+    "src": "assets/img/logo.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "background_color": "#00968f",
+  "theme_color": "#00a3e0"
+}
