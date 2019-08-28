@@ -180,14 +180,35 @@ export class BleProvider {
         this.disableButton = true;
 
         const start = Date.now();
-        // let timeOutHandler = setTimeout(
-
-        setTimeout(() => {
+        // setTimeout(
+        let timeOutHandler = setTimeout(
+          () => {
             const e = Date.now() - start;
             console.log('Timer End', e);
             this.visible = !this.visible;
             this.disableButton = false;
-          }, 1000);
+          }, 
+          1000
+          );
+
+        // const start = Date.now();
+        // let timeOutHandler = setTimeout(
+        //   () => {
+        //     const e = Date.now() - start;
+        //     console.log('Timer End', e);
+        //     this.visible = !this.visible;
+        //     this.disableButton = false;
+        //   },
+        //   500
+        // );
+
+        // setTimeout(() => {
+        //     this.visible = !this.visible;
+        //     this.disableButton = false;
+        // }, 1000);
+
+        // this.visible = !this.visible;
+        // this.disableButton = true;
   
           
       }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { NavController, LoadingController, Platform, AlertController } from "ionic-angular";
+import { Platform } from "ionic-angular";
 import 'rxjs/add/operator/map';
 import { IBeacon, IBeaconPluginResult } from '@ionic-native/ibeacon';
 
@@ -28,7 +28,7 @@ export class BeaconProvider {
   }
   private major: number = 11;
   private minor: number = 11;
-  private rssi: number = -68;
+  // private rssi: number = -68;
 
   constructor(
     public http: Http,
